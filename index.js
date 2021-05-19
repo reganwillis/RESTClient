@@ -36,6 +36,12 @@ RESTClient.Todos.post(host, "add title", false).then(json => parse_todo(json));
 RESTClient.Todos.put(host, 2, null, true).then(json => parse_todo(json));
 RESTClient.Todos.delete(host, 3).then(json => handle_deletes(json));
 
+// interact with users
+RESTClient.Users.get(host).then(json => handle_get_response(json, 'users'));
+RESTClient.Users.post(host, "add name", "add username", "add email", RESTClient.Users.build_address("add street", "add suite", "add city", "add zipcode", RESTClient.Users.build_geo("add lat", "add lng")), "add phone", "add website", RESTClient.Users.build_company("add company name", "add catch phrase", "add bs")).then(json => parse_user(json));
+RESTClient.Users.put(host, 2, "update name", null, null, RESTClient.Users.build_address(null, "update suite"), "update phone").then(json => parse_user(json));
+RESTClient.Users.delete(host, 3).then(json => handle_deletes(json));
+
 // handle json response as array or individual element
 function handle_get_response(json, type) {
 
@@ -61,6 +67,8 @@ function match_type(json, type) {
         parse_photo(json);
     else if (type == 'todos')
         parse_todo(json);
+    else if (type == 'users')
+        parse_user(json);
 }
 
 // parse individual post and print
@@ -123,6 +131,63 @@ function parse_todo(json) {
     console.log(id);
     console.log(title);
     console.log(completed);
+}
+
+// parse individual user and print
+function parse_user(json) {
+    let str = JSON.stringify(json);
+    let id = JSON.parse(str).id;
+    let name = JSON.parse(str).name;
+    let username = JSON.parse(str).username;
+    let email = JSON.parse(str).email;
+
+    let address = JSON.parse(str).address;
+    let street, suite, city, zipcode, lat, lng = undefined;
+
+    if (address != undefined) {
+        let address_str = JSON.stringify(address);
+        street = JSON.parse(address_str).street;
+        suite = JSON.parse(address_str).suite;
+        city = JSON.parse(address_str).city;
+        zipcode = JSON.parse(address_str).zipcode;
+
+        let geo = JSON.parse(address_str).geo;
+
+        if (geo != undefined) {
+            let geo_str = JSON.stringify(geo);
+            lat = JSON.parse(geo_str).lat;
+            lng = JSON.parse(geo_str).lng;
+        }
+    }
+
+    let phone = JSON.parse(str).phone;
+    let website = JSON.parse(str).website;
+
+    let company = JSON.parse(str).company;
+    let company_name, catch_phrase, bs = undefined;
+
+    if (company != undefined) {
+        let company_str = JSON.stringify(company);
+        company_name = JSON.parse(company_str).name;
+        catch_phrase = JSON.parse(company_str).catchPhrase;
+        bs = JSON.parse(company_str).bs;
+    }
+
+    console.log(id);
+    console.log(name);
+    console.log(username);
+    console.log(email);
+    console.log(street);
+    console.log(suite);
+    console.log(city);
+    console.log(zipcode);
+    console.log(lat);
+    console.log(lng);
+    console.log(phone);
+    console.log(website);
+    console.log(company_name);
+    console.log(catch_phrase);
+    console.log(bs);
 }
 
 // print appropriate delete response
