@@ -302,3 +302,87 @@ export class Posts {
     return delete_data(url);
   }
 }
+
+
+/**
+ * Accesses the server photos
+ * @class
+ */
+ export class Photos {
+
+  /**
+   * Gets photo information
+   * @method
+   * @param {string} host - URL where the server is hosted
+   * @param {?string} id - id of a specific photo
+   * @return {JSON} Specified photos or list of photos
+   */
+  static get(host, id=null) {
+    let url = `${host}/photos`;
+
+    if (id != null) {
+      url += `/${id}`;
+    }
+
+    return get_data(url);
+  }
+
+  /**
+   * Posts a photo
+   * @method
+   * @param {string} host - URL where the server is hosted
+   * @param {string} title - title of photo
+   * @param {string} photo_url - url of photo
+   * @param {string} thumbnail_url - thumnail url of photo
+   * @return {JSON} Response from server
+   */
+  static post(host, title, photo_url, thumbnail_url) {
+    let url = `${host}/photos`;
+
+    let payload = {
+      'title': title,
+      'url': photo_url,
+      'thumbnailUrl': thumbnail_url,
+    }
+
+    return send_data(url, 'POST', payload);
+  }
+
+  /**
+   * Updates a photo
+   * @param {string} host - URL where the server is hosted
+   * @param {string} id - id of a specific photo
+   * @param {?string} title - updated title of photo
+   * @param {?string} photo_url - updated url of photo
+   * @param {?string} thumbnail_url - updated thumbnail url of photo
+   * @return {JSON} Response from server
+   */
+  static put(host, id, title=null, photo_url=null, thumbnail_url=null) {
+    let url = `${host}/photos/${id}`;
+    let payload = {};
+
+    if (title != null)
+      payload['title'] = title;
+
+    if (photo_url != null)
+      payload['url'] = photo_url;
+
+    if (thumbnail_url != null)
+      payload['thumbnailUrl'] = thumbnail_url;
+
+    return send_data(url, 'PUT', payload);
+  }
+
+  /**
+   * Deletes photos
+   * @method
+   * @param {string} host - URL where the server is hosted
+   * @param {string} id - id of a specific photo
+   * @return {JSON} Response from server
+   */
+  static delete(host, id) {
+    let url = `${host}/photos/${id}`;
+
+    return delete_data(url);
+  }
+}

@@ -24,6 +24,12 @@ RESTClient.Albums.post(host, "add title").then(json => parse_album(json));
 RESTClient.Albums.put(host, 2, "update title").then(json => parse_album(json));
 RESTClient.Albums.delete(host, 3).then(json => handle_deletes(json));
 
+// interact with photos
+RESTClient.Photos.get(host, 1).then(json => handle_get_response(json, 'photos'));
+RESTClient.Photos.post(host, "add title", "add photo url", "add thumbnail url").then(json => parse_photo(json));
+RESTClient.Photos.put(host, 2, null, "update photo url").then(json => parse_photo(json));
+RESTClient.Photos.delete(host, 3).then(json => handle_deletes(json));
+
 // handle json response as array or individual element
 function handle_get_response(json, type) {
 
@@ -45,6 +51,8 @@ function match_type(json, type) {
         parse_comment(json);
     else if (type == 'albums')
         parse_album(json);
+    else if (type == 'photos')
+        parse_photo(json);
 }
 
 // parse individual post and print
@@ -81,6 +89,20 @@ function parse_album(json) {
 
     console.log(id);
     console.log(title);
+}
+
+// parse individual photo and print
+function parse_photo(json) {
+    let str = JSON.stringify(json);
+    let id = JSON.parse(str).id;
+    let title = JSON.parse(str).title;
+    let photo_url = JSON.parse(str).url;
+    let thumbnail_url = JSON.parse(str).thumbnailUrl;
+
+    console.log(id);
+    console.log(title);
+    console.log(photo_url);
+    console.log(thumbnail_url);
 }
 
 // print appropriate delete response
