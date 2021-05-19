@@ -386,3 +386,80 @@ export class Posts {
     return delete_data(url);
   }
 }
+
+/**
+ * Accesses the server todos
+ * @class
+ */
+ export class Todos {
+
+  /**
+   * Gets todo information
+   * @method
+   * @param {string} host - URL where the server is hosted
+   * @param {?string} id - id of a specific todo
+   * @return {JSON} Specified todo or list of todos
+   */
+  static get(host, id=null) {
+    let url = `${host}/todos`;
+
+    if (id != null) {
+      url += `/${id}`;
+    }
+
+    return get_data(url);
+  }
+
+  /**
+   * Posts a todo
+   * @method
+   * @param {string} host - URL where the server is hosted
+   * @param {string} title - title of todo
+   * @param {boolean} completed - if todo is completed or not
+   * @return {JSON} Response from server
+   */
+  static post(host, title, completed) {
+    let url = `${host}/todos`;
+
+    let payload = {
+      'title': title,
+      'completed': completed,
+    }
+
+    return send_data(url, 'POST', payload);
+  }
+
+  /**
+   * Updates a todo
+   * @param {string} host - URL where the server is hosted
+   * @param {string} id - id of a specific todo
+   * @param {?string} title - updated title of todo
+   * @param {?boolean} completed - updated completed status of todo
+   * @return {JSON} Response from server
+   */
+  static put(host, id, title=null, completed=null) {
+    let url = `${host}/todos/${id}`;
+    let payload = {};
+
+    if (title != null)
+      payload['title'] = title;
+
+    if (completed != null)
+      payload['completed'] = completed;
+
+    return send_data(url, 'PUT', payload);
+  }
+
+  /**
+   * Deletes todos
+   * @method
+   * @param {string} host - URL where the server is hosted
+   * @param {string} id - id of a specific todo
+   * @return {JSON} Response from server
+   */
+  static delete(host, id) {
+    let url = `${host}/todos/${id}`;
+
+    return delete_data(url);
+  }
+}
