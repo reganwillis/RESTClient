@@ -1,11 +1,9 @@
 
 // Regan Willis 2021
 
-// TODO: style
-// TODO: handle undefined prints
 // TODO: style user output
 // TODO: handle repeated deletes from single resource response
-// TODO: condense repetitive code
+// TODO: general description of project and link to code
 
 // import module
 import * as RESTClient from './RESTClient.js'
@@ -14,38 +12,38 @@ let host = 'https://jsonplaceholder.typicode.com';
 
 // interact with posts
 RESTClient.Posts.get(host, 1).then(json => handle_get_response(json, 'posts'));
-RESTClient.Posts.post(host, "add title", "add body").then(json => parse_post(json));
-RESTClient.Posts.put(host, 2, null, "update body").then(json => parse_post(json));
+RESTClient.Posts.post(host, "add title", "add body").then(json => display_post(json));
+RESTClient.Posts.put(host, 2, null, "update body").then(json => display_post(json));
 RESTClient.Posts.delete(host, 3).then(response => handle_deletes(response));
 
 // interact with comments
 RESTClient.Comments.get(host, 1).then(json => handle_get_response(json, 'comments'));
-RESTClient.Comments.post(host, "add name", "add email", "add body").then(json => parse_comment(json));
-RESTClient.Comments.put(host, 2, "update name").then(json => parse_comment(json));
+RESTClient.Comments.post(host, "add name", "add email", "add body").then(json => display_comment(json));
+RESTClient.Comments.put(host, 2, "update name").then(json => display_comment(json));
 RESTClient.Comments.delete(host, 3).then(json => handle_deletes(json));
 
 // interact with albums
 RESTClient.Albums.get(host, 1).then(json => handle_get_response(json, 'albums'));
-RESTClient.Albums.post(host, "add title").then(json => parse_album(json));
-RESTClient.Albums.put(host, 2, "update title").then(json => parse_album(json));
+RESTClient.Albums.post(host, "add title").then(json => display_album(json));
+RESTClient.Albums.put(host, 2, "update title").then(json => display_album(json));
 RESTClient.Albums.delete(host, 3).then(json => handle_deletes(json));
 
 // interact with photos
 RESTClient.Photos.get(host, 1).then(json => handle_get_response(json, 'photos'));
-RESTClient.Photos.post(host, "add title", "https://s3.us-east-2.amazonaws.com/reganwillis-softwaredeveloper.com/images/coffeeshop.jpg").then(json => parse_photo(json));
-RESTClient.Photos.put(host, 2, null, "https://s3.us-east-2.amazonaws.com/reganwillis-softwaredeveloper.com/images/books.jpg").then(json => parse_photo(json));
+RESTClient.Photos.post(host, "add title", "https://s3.us-east-2.amazonaws.com/reganwillis-softwaredeveloper.com/images/coffeeshop.jpg").then(json => display_photo(json));
+RESTClient.Photos.put(host, 2, null, "https://s3.us-east-2.amazonaws.com/reganwillis-softwaredeveloper.com/images/books.jpg").then(json => display_photo(json));
 RESTClient.Photos.delete(host, 3).then(json => handle_deletes(json));
 
 // interact with todos
 RESTClient.Todos.get(host, 1).then(json => handle_get_response(json, 'todos'));
-RESTClient.Todos.post(host, "add title", false).then(json => parse_todo(json));
-RESTClient.Todos.put(host, 2, null, true).then(json => parse_todo(json));
+RESTClient.Todos.post(host, "add title", false).then(json => display_todo(json));
+RESTClient.Todos.put(host, 2, null, true).then(json => display_todo(json));
 RESTClient.Todos.delete(host, 3).then(json => handle_deletes(json));
 
 // interact with users
-RESTClient.Users.get(host).then(json => handle_get_response(json, 'users'));
-RESTClient.Users.post(host, "add name", "add username", "add email", RESTClient.Users.build_address("add street", "add suite", "add city", "add zipcode", RESTClient.Users.build_geo("add lat", "add lng")), "add phone", "add website", RESTClient.Users.build_company("add company name", "add catch phrase", "add bs")).then(json => parse_user(json));
-RESTClient.Users.put(host, 2, "update name", null, null, RESTClient.Users.build_address(null, "update suite"), "update phone").then(json => parse_user(json));
+RESTClient.Users.get(host, 1).then(json => handle_get_response(json, 'users'));
+RESTClient.Users.post(host, "add name", "add username", "add email", RESTClient.Users.build_address("add street", "add suite", "add city", "add zipcode", RESTClient.Users.build_geo("add lat", "add lng")), "add phone", "add website", RESTClient.Users.build_company("add company name", "add catch phrase", "add bs")).then(json => display_user(json));
+RESTClient.Users.put(host, 2, "update name", null, null, RESTClient.Users.build_address(null, "update suite"), "update phone").then(json => display_user(json));
 RESTClient.Users.delete(host, 3).then(json => handle_deletes(json));
 
 // handle json response as array or individual element
@@ -64,179 +62,153 @@ function handle_get_response(json, type) {
 // send data to correct parsing function based on type
 function match_type(json, type) {
     if (type == 'posts')
-        parse_post(json);
+        display_post(json);
     else if (type == 'comments')
-        parse_comment(json);
+        display_comment(json);
     else if (type == 'albums')
-        parse_album(json);
+        display_album(json);
     else if (type == 'photos')
-        parse_photo(json);
+        display_photo(json);
     else if (type == 'todos')
-        parse_todo(json);
+        display_todo(json);
     else if (type == 'users')
-        parse_user(json);
+        display_user(json);
+}
+
+// create and return a div inside given existing container
+function create_div(container_name) {
+    let container = document.getElementById(container_name);
+
+    let div = document.createElement('div');
+    container.appendChild(div);
+
+    return div
+}
+
+// add h2 to given div in proper format
+function add_header_element(parent, content, id) {
+    let elem = document.createElement('h2');
+    elem.textContent = content + " " + id;
+    parent.appendChild(elem);
+}
+
+// add p to given div in proper format
+function add_info_element(parent, info, content) {
+
+    // if undefined nothing has changed so it does not
+    // need to be displayed
+    if (content != undefined) {
+        let elem = document.createElement('p');
+        elem.textContent = info + ": " + content;
+        parent.appendChild(elem);
+    }
 }
 
 // parse individual post and print
-function parse_post(json) {
+function display_post(json) {
     let str = JSON.stringify(json);
     let id = JSON.parse(str).id;
     let title = JSON.parse(str).title;
     let body = JSON.parse(str).body;
 
-    // container to hold all posts
-    let container = document.getElementById('display-posts');
-
-    // each post has its own div
-    let post = document.createElement('div');
-    container.appendChild(post);
+    // each post has its own div in the post container
+    let parent = create_div('display-posts');
 
     // post heading (id)
-    let id_element = document.createElement('h2');
-    id_element.textContent = "Post " + id;
-    post.appendChild(id_element);
+    add_header_element(parent, "Post ", id);
 
-    // display post title
-    let title_element = document.createElement('p');
-    title_element.textContent = "Title: " + title;
-    post.appendChild(title_element);
-
-    // display post body
-    let body_element = document.createElement('p');
-    body_element.textContent = "Body:\n" + body;
-    post.appendChild(body_element);
+    // display post elements
+    add_info_element(parent, "Title", title);
+    add_info_element(parent, "Body", body);
 }
 
 // parse individual comment and print
-function parse_comment(json) {
+function display_comment(json) {
     let str = JSON.stringify(json);
     let id = JSON.parse(str).id;
     let name = JSON.parse(str).name;
     let email = JSON.parse(str).email;
     let body = JSON.parse(str).body;
 
-    // container to hold all comments
-    let container = document.getElementById('display-comments');
-
-    // each comment has its own div
-    let comment = document.createElement('div');
-    container.appendChild(comment);
+    // each comment has its own div in the comment container
+    let parent = create_div('display-comments');
 
     // post heading (id)
-    let id_element = document.createElement('h2');
-    id_element.textContent = "Comment " + id;
-    comment.appendChild(id_element);
+    add_header_element(parent, "Comment", id);
 
-    // display comment name
-    let name_element = document.createElement('p');
-    name_element.textContent = "Name: " + name;
-    comment.appendChild(name_element);
-
-    // display comment email
-    let email_element = document.createElement('p');
-    email_element.textContent = "Email: " + email;
-    comment.appendChild(email_element);
-
-    // display comment body
-    let body_element = document.createElement('p');
-    body_element.textContent = "Body:\n" + body;
-    comment.appendChild(body);
+    // display comment elements
+    add_info_element(parent, "Name", name);
+    add_info_element(parent, "Email", email);
+    add_info_element(parent, "Body", body);
 }
 
 // parse individual album and print
-function parse_album(json) {
+function display_album(json) {
     let str = JSON.stringify(json);
     let id = JSON.parse(str).id;
     let title = JSON.parse(str).title;
 
-    // container to hold all albums
-    let container = document.getElementById('display-albums');
-
-    // each album has its own div
-    let album = document.createElement('div');
-    container.appendChild(album);
+    // each album has its own div in the albums container
+    let parent = create_div('display-albums');
 
     // album heading (id)
-    let id_element = document.createElement('h2');
-    id_element.textContent = "Album " + id;
-    album.appendChild(id_element);
+    add_header_element(parent, "Album", id);
 
-    // display album title
-    let title_element = document.createElement('p');
-    title_element.textContent = "Title: " + title;
-    album.appendChild(title_element);
+    // display album elements
+    add_info_element(parent, "Title", title);
 }
 
 // parse individual photo and print
-function parse_photo(json) {
+function display_photo(json) {
     let str = JSON.stringify(json);
     let id = JSON.parse(str).id;
     let title = JSON.parse(str).title;
     let photo_url = JSON.parse(str).url;
     let thumbnail_url = JSON.parse(str).thumbnailUrl;
-    
-    // container to hold all photos
-    let container = document.getElementById('display-photos');
 
-    // each photo has its own div
-    let photo = document.createElement('div');
-    container.appendChild(photo);
+    // each photo has its own div in the photos container
+    let parent = create_div('display-photos');
 
     // photo heading (id)
-    let id_element = document.createElement('h2');
-    id_element.textContent = "Photo " + id;
-    photo.appendChild(id_element);
+    add_header_element(parent, "Photo", id);
 
-    // display photo title
-    let title_element = document.createElement('p');
-    title_element.textContent = "Title: " + title;
-    photo.appendChild(title_element);
+    // display photo elements
+    add_info_element(parent, "Title", title);
+    add_info_element(parent, "Thumbnail URL", thumbnail_url);
 
     // display photo
     if (photo_url != undefined) {
         let photo_element = document.createElement('img');
         photo_element.src = photo_url;
-        photo.appendChild(photo_element);
+        parent.appendChild(photo_element);
     }
 }
 
 // parse individual todo and print
-function parse_todo(json) {
+function display_todo(json) {
     let str = JSON.stringify(json);
     let id = JSON.parse(str).id;
     let title = JSON.parse(str).title;
     let completed = JSON.parse(str).completed;
 
-    // container to hold all todos
-    let container = document.getElementById('display-todos');
-
-    // each todo has its own div
-    let todo = document.createElement('div');
-    container.appendChild(todo);
+    // each todo has its own div in the todos container
+    let parent = create_div('display-todos');
 
     // todo heading (id)
-    let id_element = document.createElement('h2');
-    id_element.textContent = "TODO " + id;
-    todo.appendChild(id_element);
+    add_header_element(parent, "TODO", id);
 
-    // display todo title
-    let title_element = document.createElement('p');
-    title_element.textContent = "Title: " + title;
-    todo.appendChild(title_element);
-
-    // display todo completed status
-    let completed_element = document.createElement('p');
+    // display todo elements
+    add_info_element(parent, "Title", title);
 
     if (completed == true) {
-        completed_element.textContent = "Status: completed";
+        add_info_element(parent, "Status", "completed");
     } else {
-        completed_element.textContent = "Status: not completed";
+        add_info_element(parent, "Status", "not completed");
     }
-    todo.appendChild(completed_element);
 }
 
 // parse individual user and print
-function parse_user(json) {
+function display_user(json) {
     let str = JSON.stringify(json);
     let id = JSON.parse(str).id;
     let name = JSON.parse(str).name;
@@ -275,87 +247,27 @@ function parse_user(json) {
         bs = JSON.parse(company_str).bs;
     }
 
-    // container to hold all users
-    let container = document.getElementById('display-users');
-
-    // each user has its own div
-    let user = document.createElement('div');
-    container.appendChild(user);
+    // each user has its own div in the users container
+    let parent = create_div('display-users');
 
     // user heading (id)
-    let id_element = document.createElement('h2');
-    id_element.textContent = "User " + id;
-    user.appendChild(id_element);
+    add_header_element(parent, "User", id);
 
-    // display user name
-    let name_element = document.createElement('p');
-    name_element.textContent = "Name: " + name;
-    user.appendChild(name_element);
-
-    // display user username
-    let username_element = document.createElement('p');
-    username_element.textContent = "Username: " + username;
-    user.appendChild(username_element);
-
-    // display user email
-    let email_element = document.createElement('p');
-    email_element.textContent = "Email: " + email;
-    user.appendChild(email_element);
-
-    // display user street
-    let street_element = document.createElement('p');
-    street_element.textContent = "Street: " + street;
-    user.appendChild(street_element);
-
-    // display user suite
-    let suite_element = document.createElement('p');
-    suite_element.textContent = "Suite: " + suite;
-    user.appendChild(suite_element);
-
-    // display user city
-    let city_element = document.createElement('p');
-    city_element.textContent = "City: " + city;
-    user.appendChild(city_element);
-
-    // display user zipcode
-    let zipcode_element = document.createElement('p');
-    zipcode_element.textContent = "Zipcode: " + zipcode;
-    user.appendChild(zipcode_element);
-
-    // display user lat
-    let lat_element = document.createElement('p');
-    lat_element.textContent = "Lat: " + lat;
-    user.appendChild(lat_element);
-
-    // display user lng
-    let lng_element = document.createElement('p');
-    lng_element.textContent = "Lng: " + lng;
-    user.appendChild(lng_element);
-
-    // display user phone
-    let phone_element = document.createElement('p');
-    phone_element.textContent = "Phone: " + phone;
-    user.appendChild(phone_element);
-
-    // display user website
-    let website_element = document.createElement('p');
-    website_element.textContent = "Website: " + website;
-    user.appendChild(website_element);
-
-    // display user company name
-    let company_name_element = document.createElement('p');
-    company_name_element.textContent = "Company Name: " + company_name;
-    user.appendChild(company_name_element);
-
-    // display user company catch phrase
-    let catch_phrase_element = document.createElement('p');
-    catch_phrase_element.textContent = "Catch Phrase: " + catch_phrase;
-    user.appendChild(catch_phrase_element);
-
-    // display user company business
-    let company_business_element = document.createElement('p');
-    company_business_element.textContent = "Business: " + bs;
-    user.appendChild(company_business_element);
+    // display user elements
+    add_info_element(parent, "Name", name);
+    add_info_element(parent, "Username", username);
+    add_info_element(parent, "Email", email);
+    add_info_element(parent, "Street", street);
+    add_info_element(parent, "Suite", suite);
+    add_info_element(parent, "City", city);
+    add_info_element(parent, "Zipcode", zipcode);
+    add_info_element(parent, "Lat", lat);
+    add_info_element(parent, "Lng", lng);
+    add_info_element(parent, "Phone", phone);
+    add_info_element(parent, "Website", website);
+    add_info_element(parent, "Company", company_name);
+    add_info_element(parent, "Catch Phrase", catch_phrase);
+    add_info_element(parent, "Business", bs);
 }
 
 // print appropriate delete response
@@ -371,38 +283,41 @@ function handle_deletes(response) {
     let status = JSON.parse(str).status;
 
     if (status == 200) {
-        message = "ID #" + id + " has been successfully deleted from " + resource + ".";
+        message = 'successfully deleted';
+        //message = "ID #" + id + " has been successfully deleted from " + resource + ".";
     } else {
-        message = "Error: ID #" + id + " was not deleted from " + resource + ".";
+        message = 'not successfully deleted (error)';
+        //message = "Error: ID #" + id + " was not deleted from " + resource + ".";
     }
 
-    console.log(message);
-    let container = null;
+    let container_name = null;
 
-    if (resource == 'posts')
-        container = document.getElementById('display-posts');
-    else if (resource == 'comments')
-        container = document.getElementById('display-comments');
-    else if (resource == 'albums')
-        container = document.getElementById('display-albums');
-    else if (resource == 'photos')
-        container = document.getElementById('display-photos');
-    else if (resource == 'todos')
-        container = document.getElementById('display-todos');
-    else if (resource == 'users')
-        container = document.getElementById('display-users');
+    if (resource == 'posts') {
+        container_name = 'display-posts';
+        resource = "Post";
+    } else if (resource == 'comments') {
+        container_name = 'display-comments';
+        resource = "Comment";
+    } else if (resource == 'albums') {
+        container_name = 'display-albums';
+        resource = "Album";
+    } else if (resource == 'photos') {
+        container_name = 'display-photos';
+        resource = "Photo";
+    } else if (resource == 'todos') {
+        container_name = 'display-todos';
+        resource = "TODO";
+    } else if (resource == 'users') {
+        container_name = 'display-users';
+        resource = "User";
+    }
 
     // each delete message has its own div
-    let delete_div = document.createElement('div');
-    container.appendChild(delete_div);
+    let parent = create_div(container_name);
 
     // heading (id)
-    let id_element = document.createElement('h2');
-    id_element.textContent = "Deleted " + resource;
-    delete_div.appendChild(id_element);
+    add_header_element(parent, resource, id);
 
-    // display album title
-    let message_element = document.createElement('p');
-    message_element.textContent = message;
-    delete_div.appendChild(message_element);
+    // display delete message
+    add_info_element(parent, resource + " #" + id, message);
 }
