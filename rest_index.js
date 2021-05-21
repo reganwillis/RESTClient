@@ -1,8 +1,6 @@
 
 // Regan Willis 2021
 
-// TODO: general description of project and link to code
-
 // import module
 import * as RESTClient from './RESTClient.js'
 

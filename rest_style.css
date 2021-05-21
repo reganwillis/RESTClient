@@ -13,12 +13,8 @@ h1 {
     margin-top: 0;
 }
 
-a:hover {
-    color: red;
-}
-
 a {
-    color: black;
+    color: red;
 }
 
 .header p {
