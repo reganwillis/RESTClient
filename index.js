@@ -1,8 +1,6 @@
 
 // Regan Willis 2021
 
-// TODO: style user output
-// TODO: handle repeated deletes from single resource response
 // TODO: general description of project and link to code
 
 // import module
@@ -15,6 +13,7 @@ RESTClient.Posts.get(host, 1).then(json => handle_get_response(json, 'posts'));
 RESTClient.Posts.post(host, "add title", "add body").then(json => display_post(json));
 RESTClient.Posts.put(host, 2, null, "update body").then(json => display_post(json));
 RESTClient.Posts.delete(host, 3).then(response => handle_deletes(response));
+RESTClient.Posts.delete(host, 4).then(response => handle_deletes(response));
 
 // interact with comments
 RESTClient.Comments.get(host, 1).then(json => handle_get_response(json, 'comments'));
@@ -215,38 +214,6 @@ function display_user(json) {
     let username = JSON.parse(str).username;
     let email = JSON.parse(str).email;
 
-    let address = JSON.parse(str).address;
-    let street, suite, city, zipcode, lat, lng = undefined;
-
-    if (address != undefined) {
-        let address_str = JSON.stringify(address);
-        street = JSON.parse(address_str).street;
-        suite = JSON.parse(address_str).suite;
-        city = JSON.parse(address_str).city;
-        zipcode = JSON.parse(address_str).zipcode;
-
-        let geo = JSON.parse(address_str).geo;
-
-        if (geo != undefined) {
-            let geo_str = JSON.stringify(geo);
-            lat = JSON.parse(geo_str).lat;
-            lng = JSON.parse(geo_str).lng;
-        }
-    }
-
-    let phone = JSON.parse(str).phone;
-    let website = JSON.parse(str).website;
-
-    let company = JSON.parse(str).company;
-    let company_name, catch_phrase, bs = undefined;
-
-    if (company != undefined) {
-        let company_str = JSON.stringify(company);
-        company_name = JSON.parse(company_str).name;
-        catch_phrase = JSON.parse(company_str).catchPhrase;
-        bs = JSON.parse(company_str).bs;
-    }
-
     // each user has its own div in the users container
     let parent = create_div('display-users');
 
@@ -257,17 +224,69 @@ function display_user(json) {
     add_info_element(parent, "Name", name);
     add_info_element(parent, "Username", username);
     add_info_element(parent, "Email", email);
-    add_info_element(parent, "Street", street);
-    add_info_element(parent, "Suite", suite);
-    add_info_element(parent, "City", city);
-    add_info_element(parent, "Zipcode", zipcode);
-    add_info_element(parent, "Lat", lat);
-    add_info_element(parent, "Lng", lng);
+
+    let phone = JSON.parse(str).phone;
+    let website = JSON.parse(str).website;
+
     add_info_element(parent, "Phone", phone);
     add_info_element(parent, "Website", website);
-    add_info_element(parent, "Company", company_name);
-    add_info_element(parent, "Catch Phrase", catch_phrase);
-    add_info_element(parent, "Business", bs);
+
+    let address = JSON.parse(str).address;
+
+    if (address != undefined) {
+        let address_str = JSON.stringify(address);
+        let street = JSON.parse(address_str).street;
+        let suite = JSON.parse(address_str).suite;
+        let city = JSON.parse(address_str).city;
+        let zipcode = JSON.parse(address_str).zipcode;
+
+        // user address heading
+        let address_elem = document.createElement('h4');
+        address_elem.textContent = "Address";
+        parent.appendChild(address_elem);
+
+        // address line 1
+        let address_line_1 = document.createElement('div');
+        parent.appendChild(address_line_1);
+        address_line_1.className = "line";
+        add_info_element(address_line_1, "Street", street);
+        add_info_element(address_line_1, "Suite", suite);
+
+        // address line 2
+        let address_line_2 = document.createElement('div');
+        parent.appendChild(address_line_2);
+        address_line_2.className = "line";
+        add_info_element(address_line_2, "City", city);
+        add_info_element(address_line_2, "Zipcode", zipcode);
+
+        let geo = JSON.parse(address_str).geo;
+
+        if (geo != undefined) {
+            let geo_str = JSON.stringify(geo);
+            let lat = JSON.parse(geo_str).lat;
+            let lng = JSON.parse(geo_str).lng;
+
+            add_info_element(parent, "Latitude and Longitude", "(" + lat + ", " + lng + ")");
+        }
+    }
+
+    let company = JSON.parse(str).company;
+
+    if (company != undefined) {
+        let company_str = JSON.stringify(company);
+        let company_name = JSON.parse(company_str).name;
+        let catch_phrase = JSON.parse(company_str).catchPhrase;
+        let bs = JSON.parse(company_str).bs;
+
+        // user company heading
+        let company_elem = document.createElement('h4');
+        company_elem.textContent = "Company";
+        parent.appendChild(company_elem);
+
+        add_info_element(parent, "Name", company_name);
+        add_info_element(parent, "Slogan", catch_phrase);
+        add_info_element(parent, "Business", bs);
+    }
 }
 
 // print appropriate delete response

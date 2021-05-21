@@ -71,3 +71,16 @@ img {
     padding: 20px;
     background-color: lightcyan;
 }
+
+h4 {
+    margin-bottom: 0;
+}
+
+.line {
+    display: flex;
+    flex-direction: row;
+}
+
+.line p {
+    padding-right: 10px;
+}
