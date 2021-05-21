@@ -1,0 +1,73 @@
+body {
+    margin: 0;
+    display: block;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.header, .footer {
+    background: skyblue;
+    padding: 20px;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+a:hover {
+    color: red;
+}
+
+a {
+    color: black;
+}
+
+.header p {
+    margin: 0;
+    padding: 0;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+}
+
+.content p, .content h3, img {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+img {
+    width: 250px;
+    height: 250px;
+}
+
+#display-posts {
+    padding: 20px;
+    background-color: lemonchiffon;
+}
+
+#display-comments {
+    padding: 20px;
+    background-color: lavender;
+}
+
+#display-albums {
+    padding: 20px;
+    background-color: lightblue;
+}
+
+#display-photos {
+    padding: 20px;
+    background-color: lightcoral;
+}
+
+#display-todos {
+    padding: 20px;
+    background-color: lightgreen;
+}
+
+#display-users {
+    padding: 20px;
+    background-color: lightcyan;
+}
